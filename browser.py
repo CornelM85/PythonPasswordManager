@@ -2,7 +2,6 @@ import time
 import keyboard
 import os
 import psutil
-import pywinauto
 from selenium import webdriver
 from pywinauto import Application
 
@@ -68,6 +67,7 @@ class Browser:
         browser = Application(backend='uia')
         browser.start(
             cmd_line=fr"{self.get_path() + self.browser} --remote-debugging-port=8989 --user-dir-profile=Default --start-maximized")
+
     def kill_process(self):
         for process in psutil.process_iter():
             try:
@@ -96,7 +96,6 @@ class Browser:
 
                 return url
 
-
     def go_to_url(self, url: str):
         if self.get_cmd_line() is True:
             options = webdriver.EdgeOptions()
@@ -116,6 +115,3 @@ class Browser:
             driver.get(url)
 
 
-if __name__ == '__main__':
-    br = Browser()
-    br.go_to_url('https://ww5.gogoanimes.fi/')
