@@ -4,10 +4,13 @@ import os
 import psutil
 from selenium import webdriver
 from pywinauto import Application
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.wait import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 
 
 class Browser:
-    BROWSERS = ['msedge.exe', 'chrome.exe', 'firefox.exe', 'opera.exe']
+    BROWSERS = ['msedge.exe', 'chrome.exe', 'firefox.exe']
 
     def __init__(self):
         if self.set_name() is None:
@@ -82,7 +85,7 @@ class Browser:
             keyboard.send('ctrl+shift+t')
 
     def get_url(self):
-        browsers = ['Chrome', 'Edge', 'Firefox', 'Opera']
+        browsers = ['Chrome', 'Edge', 'Firefox']
 
         for browser in browsers:
             if browser in self.get_path():
@@ -96,22 +99,45 @@ class Browser:
 
                 return url
 
-    def go_to_url(self, url: str):
-        if self.get_cmd_line() is True:
+    def __set_driver(self):
+
+        if self.browser == 'msedge.exe':
             options = webdriver.EdgeOptions()
             options.add_experimental_option('debuggerAddress', 'localhost:8989')
             driver = webdriver.Edge(options=options)
+
+        elif self.browser == 'chrome.exe':
+            options = webdriver.ChromeOptions()
+            options.add_experimental_option('debuggerAddress', 'localhost:8989')
+            driver = webdriver.Chrome(options=options)
+
+        elif self.browser == 'firefox.exe':
+            options = webdriver.FirefoxOptions()
+            driver = webdriver.Firefox(options=options)
+        else:
+            return NotImplementedError
+
+        return driver
+
+    def go_to_url(self, url: str):
+
+        if self.get_cmd_line() is True:
+            driver = self.__set_driver()
             driver.switch_to.new_window('tab')
             driver.get(url)
 
         else:
             self.kill_process()
-            options = webdriver.EdgeOptions()
-            options.add_experimental_option('debuggerAddress', 'localhost:8989')
-            driver = webdriver.Edge(options=options)
+            driver = self.__set_driver()
             driver.close()
-            driver = webdriver.Edge(options=options)
+            driver = self.__set_driver()
             driver.switch_to.new_window('tab')
             driver.get(url)
 
+    def get_site_login_user(self):
+        url = self.get_url()
+        driver = self.__set_driver()
+        driver.get(url)
+        validate = WebDriverWait(driver, timeout=2).until(EC.presence_of_element_located((By.ID, 'username')))
 
+        return validate.is_displayed()

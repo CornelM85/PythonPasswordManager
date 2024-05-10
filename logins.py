@@ -41,3 +41,4 @@ class LoginsFrame(ctk.CTkFrame):
         url = event.widget.master.cget('text')
         browser = Browser()
         browser.go_to_url(url)
+
