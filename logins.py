@@ -28,14 +28,14 @@ class LoginsFrame(ctk.CTkFrame):
     def add_site_url(self):
         browser = Browser()
         entries = int(len(self.web_sites.children) / 2)
-
-        image = ctk.CTkImage(Image.open(resource_path('Images/info.png')), size=(20, 20))
-        icon = ctk.CTkLabel(self.web_sites, image=image, width=20, height=10, text='')
-        icon.grid(row=entries + 1, column=0, padx=(0, 20))
-        url = ctk.CTkLabel(self.web_sites, height=10, width=630, text=browser.get_url(), text_color='#00A2E8',
-                           cursor='hand2', font=ctk.CTkFont('times', size=20, underline=True), anchor='w')
-        url.grid(row=entries + 1, column=1)
-        url.bind('<Button-1>', self.go_to_site)
+        if browser.get_url() != 'Not a login page!':
+            image = ctk.CTkImage(Image.open(resource_path('Images/info.png')), size=(20, 20))
+            icon = ctk.CTkLabel(self.web_sites, image=image, width=20, height=10, text='')
+            icon.grid(row=entries + 1, column=0, padx=(0, 20))
+            url = ctk.CTkLabel(self.web_sites, height=10, width=630, text=browser.get_url(), text_color='#00A2E8',
+                               cursor='hand2', font=ctk.CTkFont('times', size=18, underline=True), anchor='w')
+            url.grid(row=entries + 1, column=1)
+            url.bind('<Button-1>', self.go_to_site)
 
     def go_to_site(self, event):
         url = event.widget.master.cget('text')

@@ -4,9 +4,8 @@ import os
 import psutil
 from selenium import webdriver
 from pywinauto import Application
+from selenium.webdriver import Keys
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support.wait import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
 
 
 class Browser:
@@ -69,7 +68,10 @@ class Browser:
     def open(self):
         browser = Application(backend='uia')
         browser.start(
-            cmd_line=fr"{self.get_path() + self.browser} --remote-debugging-port=8989 --user-dir-profile=Default --start-maximized")
+            cmd_line=fr'''
+            {self.get_path() + self.browser} 
+            --remote-debugging-port=8989 --user-dir-profile=Default --start-maximized"
+            ''')
 
     def kill_process(self):
         for process in psutil.process_iter():
@@ -97,7 +99,12 @@ class Browser:
 
                 url = dlg.child_window(control_type="Edit", found_index=0).get_value()
 
-                return url
+                if 'login' in url:
+
+                    return url
+
+                else:
+                    return 'Not a login page!'
 
     def __set_driver(self):
 
@@ -124,7 +131,6 @@ class Browser:
         if self.get_cmd_line() is True:
             driver = self.__set_driver()
             driver.switch_to.new_window('tab')
-            driver.get(url)
 
         else:
             self.kill_process()
@@ -132,12 +138,15 @@ class Browser:
             driver.close()
             driver = self.__set_driver()
             driver.switch_to.new_window('tab')
-            driver.get(url)
 
-    def get_site_login_user(self):
-        url = self.get_url()
-        driver = self.__set_driver()
         driver.get(url)
-        validate = WebDriverWait(driver, timeout=2).until(EC.presence_of_element_located((By.ID, 'username')))
+        for name in ['username', 'user_name', 'email', 'text']:
+            nr_of_elements = len(driver.find_elements(By.XPATH, f"//input[@type='{name}']"))
+            if nr_of_elements == 1:
+                driver.find_element(By.XPATH, f"//input[@type='{name}']").send_keys(Keys.CONTROL + 'A')
+                driver.find_element(By.XPATH, f"//input[@type='{name}']").send_keys('username')
+            elif nr_of_elements > 1:
+                driver.find_element(By.XPATH, "//form[@method='post']//input[1]").send_keys(Keys.CONTROL + 'A')
+                driver.find_element(By.XPATH, "//form[@method='post']//input[1]").send_keys('username')
 
-        return validate.is_displayed()
+        driver.find_element(By.XPATH, "//input[@type='password']").send_keys('123456789')
