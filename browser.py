@@ -1,10 +1,9 @@
 import time
 import keyboard
 import os
+import requests
 import psutil
 import urllib.request
-import urllib3
-import requests
 from selenium import webdriver
 from pywinauto import Application
 from selenium.webdriver import Keys
@@ -107,20 +106,28 @@ class Browser:
                 else:
                     return 'Not a login page!'
 
-    def __set_driver(self):
+    def __set_driver(self, headless=False):
 
         if self.browser == 'msedge.exe':
             options = webdriver.EdgeOptions()
-            options.add_experimental_option('debuggerAddress', 'localhost:8989')
+            if headless is True:
+                options.add_argument('--headless')
+            else:
+                options.add_experimental_option('debuggerAddress', 'localhost:8989')
             driver = webdriver.Edge(options=options)
 
         elif self.browser == 'chrome.exe':
             options = webdriver.ChromeOptions()
-            options.add_experimental_option('debuggerAddress', 'localhost:8989')
+            if headless is True:
+                options.add_argument('--headless')
+            else:
+                options.add_experimental_option('debuggerAddress', 'localhost:8989')
             driver = webdriver.Chrome(options=options)
 
         elif self.browser == 'firefox.exe':
             options = webdriver.FirefoxOptions()
+            if headless is True:
+                options.add_argument('--headless')
             driver = webdriver.Firefox(options=options)
         else:
             return NotImplementedError
@@ -153,18 +160,26 @@ class Browser:
 
         driver.find_element(By.CSS_SELECTOR, "input[type='password']").send_keys('123456789')
 
-    def get_site_icon(self):
-        url = self.get_url()
-        image_name = ''
+    def get_site_icon(self, url):
+        driver = self.__set_driver(headless=True)
+        driver.get(url)
+        elements_list = driver.find_elements(By.CSS_SELECTOR, "link[rel$='icon']")
+        if len(elements_list) >= 1:
+            icon_url = elements_list[0].get_attribute('href')
+            if not os.path.isfile(f'/Images/{self.set_icon_name(url)}'):
+                r = requests.get(icon_url)
+                with open(f'Images/{self.set_icon_name(url)}', 'wb') as f:
+                    f.write(r.content)
+
+        driver.quit()
+
+    def set_icon_name(self, url):
+        if 'https://www.' in url:
+            url = url.removeprefix('https://www.')
+        else:
+            url = url.removeprefix('https://')
+
         for i in range(len(url)):
             if url[i] == '.':
-                image_name = url[8:i] + '.png'
-                break
-        options = webdriver.EdgeOptions()
-        options.add_argument('--headless')
-        driver = webdriver.Edge(options=options)
-        driver.get(url)
-        icon_url = driver.find_element(By.CSS_SELECTOR, "link[rel$='icon']").get_attribute('href')
-        driver.quit()
-        urllib.request.urlretrieve(icon_url, f'Images/{image_name}')
-        return image_name
+                image_name = url[0:i] + '.png'
+                return image_name
