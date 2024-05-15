@@ -2,6 +2,9 @@ import time
 import keyboard
 import os
 import psutil
+import urllib.request
+import urllib3
+import requests
 from selenium import webdriver
 from pywinauto import Application
 from selenium.webdriver import Keys
@@ -68,10 +71,8 @@ class Browser:
     def open(self):
         browser = Application(backend='uia')
         browser.start(
-            cmd_line=fr'''
-            {self.get_path() + self.browser} 
-            --remote-debugging-port=8989 --user-dir-profile=Default --start-maximized"
-            ''')
+            cmd_line=fr"{self.get_path() +
+                         self.browser} --remote-debugging-port=8989 --user-dir-profile=Default --start-maximized")
 
     def kill_process(self):
         for process in psutil.process_iter():
@@ -140,13 +141,30 @@ class Browser:
             driver.switch_to.new_window('tab')
 
         driver.get(url)
+
         for name in ['username', 'user_name', 'email', 'text']:
-            nr_of_elements = len(driver.find_elements(By.XPATH, f"//input[@type='{name}']"))
+            nr_of_elements = len(driver.find_elements(By.CSS_SELECTOR, f"//input[type='{name}']"))
             if nr_of_elements == 1:
-                driver.find_element(By.XPATH, f"//input[@type='{name}']").send_keys(Keys.CONTROL + 'A')
-                driver.find_element(By.XPATH, f"//input[@type='{name}']").send_keys('username')
+                driver.find_element(By.CSS_SELECTOR, f"input[type='{name}']").send_keys(Keys.CONTROL + 'A')
+                driver.find_element(By.CSS_SELECTOR, f"input[type='{name}']").send_keys('username')
             elif nr_of_elements > 1:
                 driver.find_element(By.XPATH, "//form[@method='post']//input[1]").send_keys(Keys.CONTROL + 'A')
                 driver.find_element(By.XPATH, "//form[@method='post']//input[1]").send_keys('username')
 
-        driver.find_element(By.XPATH, "//input[@type='password']").send_keys('123456789')
+        driver.find_element(By.CSS_SELECTOR, "input[type='password']").send_keys('123456789')
+
+    def get_site_icon(self):
+        url = self.get_url()
+        image_name = ''
+        for i in range(len(url)):
+            if url[i] == '.':
+                image_name = url[8:i] + '.png'
+                break
+        options = webdriver.EdgeOptions()
+        options.add_argument('--headless')
+        driver = webdriver.Edge(options=options)
+        driver.get(url)
+        icon_url = driver.find_element(By.CSS_SELECTOR, "link[rel$='icon']").get_attribute('href')
+        driver.quit()
+        urllib.request.urlretrieve(icon_url, f'Images/{image_name}')
+        return image_name

@@ -27,9 +27,10 @@ class LoginsFrame(ctk.CTkFrame):
 
     def add_site_url(self):
         browser = Browser()
+        # browser.get_site_icon()
         entries = int(len(self.web_sites.children) / 2)
         if browser.get_url() != 'Not a login page!':
-            image = ctk.CTkImage(Image.open(resource_path('Images/info.png')), size=(20, 20))
+            image = ctk.CTkImage(Image.open(resource_path(f'Images/{browser.get_site_icon()}')), size=(20, 20))
             icon = ctk.CTkLabel(self.web_sites, image=image, width=20, height=10, text='')
             icon.grid(row=entries + 1, column=0, padx=(0, 20))
             url = ctk.CTkLabel(self.web_sites, height=10, width=630, text=browser.get_url(), text_color='#00A2E8',
