@@ -26,7 +26,7 @@ class PasswordManager(ctk.CTk):
         self.logins_frame = LoginsFrame(master=self, fg_color='#242424')
         self.logins_frame.grid(row=1, column=1)
 
-        place_window_in_center(self, height=640, width=1000)
+        place_window_in_center(self, height=640, width=1000, multiply=True)
 
 
 if __name__ == '__main__':

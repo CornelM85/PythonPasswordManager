@@ -18,11 +18,11 @@ def place_window_in_center(master, width, height, multiply=False, window_name=No
 
     if multiply is False or scale_factor == 1:
 
-        multiply_by = 1
+        multiply_by = scale_factor
 
     else:
 
-        multiply_by = 2
+        multiply_by = scale_factor
 
     multiplication_scale = 2 * multiply_by
 
@@ -31,8 +31,8 @@ def place_window_in_center(master, width, height, multiply=False, window_name=No
         screen_width = master.winfo_screenwidth()
         screen_height = master.winfo_screenheight()
 
-        x_coordinate = int((screen_width - width) * scale_factor / 2)
-        y_coordinate = int((screen_height - height - 35) / 2)
+        x_coordinate = int((screen_width - width) / (scale_factor * multiplication_scale))
+        y_coordinate = int((screen_height - height) / (scale_factor * multiplication_scale))
 
         master.geometry('{}x{}+{}+{}'.format(width, height, x_coordinate, y_coordinate))
 
@@ -45,7 +45,7 @@ def place_window_in_center(master, width, height, multiply=False, window_name=No
         root_y = master.winfo_y()
 
         x = int((root_width - width) / (scale_factor * multiplication_scale))
-        y = int((root_height - height) / (2 * scale_factor))
+        y = int((root_height - height) / (scale_factor * multiplication_scale))
 
         window_name.geometry('{}x{}+{}+{}'.format(width, height, x + root_x, y + root_y))
 

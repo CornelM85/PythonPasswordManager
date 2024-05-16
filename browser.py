@@ -151,7 +151,7 @@ class Browser:
         driver.get(url)
 
         for name in ['username', 'user_name', 'email', 'text']:
-            nr_of_elements = len(driver.find_elements(By.CSS_SELECTOR, f"//input[type='{name}']"))
+            nr_of_elements = len(driver.find_elements(By.CSS_SELECTOR, f"input[type='{name}']"))
             if nr_of_elements == 1:
                 driver.find_element(By.CSS_SELECTOR, f"input[type='{name}']").send_keys(Keys.CONTROL + 'A')
                 driver.find_element(By.CSS_SELECTOR, f"input[type='{name}']").send_keys('username')
@@ -170,10 +170,6 @@ class Browser:
                 icon_url = elements_list[0].get_attribute('href')
             else:
                 strip_url = urlparse(url).hostname
-                # strip_url = url.removeprefix('https://')
-                # for i in range(len(strip_url)):
-                #     if strip_url[i] == '/':
-                #         url = url[:i + 8]
                 icon_url = f'https://{strip_url}/favicon.ico'
 
             r = requests.get(icon_url)
