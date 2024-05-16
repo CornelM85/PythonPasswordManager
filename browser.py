@@ -3,7 +3,8 @@ import keyboard
 import os
 import requests
 import psutil
-import urllib.request
+import json
+from urllib.parse import urlparse
 from selenium import webdriver
 from pywinauto import Application
 from selenium.webdriver import Keys
@@ -161,25 +162,33 @@ class Browser:
         driver.find_element(By.CSS_SELECTOR, "input[type='password']").send_keys('123456789')
 
     def get_site_icon(self, url):
-        driver = self.__set_driver(headless=True)
-        driver.get(url)
-        elements_list = driver.find_elements(By.CSS_SELECTOR, "link[rel$='icon']")
-        if len(elements_list) >= 1:
-            icon_url = elements_list[0].get_attribute('href')
-            if not os.path.isfile(f'/Images/{self.set_icon_name(url)}'):
-                r = requests.get(icon_url)
-                with open(f'Images/{self.set_icon_name(url)}', 'wb') as f:
-                    f.write(r.content)
+        if not os.path.isfile(f'/Images/{self.set_icon_name(url)}'):
+            driver = self.__set_driver(headless=True)
+            driver.get(url)
+            elements_list = driver.find_elements(By.CSS_SELECTOR, "link[rel$='icon']")
+            if len(elements_list) >= 1:
+                icon_url = elements_list[0].get_attribute('href')
+            else:
+                strip_url = urlparse(url).hostname
+                # strip_url = url.removeprefix('https://')
+                # for i in range(len(strip_url)):
+                #     if strip_url[i] == '/':
+                #         url = url[:i + 8]
+                icon_url = f'https://{strip_url}/favicon.ico'
 
-        driver.quit()
+            r = requests.get(icon_url)
+            with open(f'Images/{self.set_icon_name(url)}', 'wb') as f:
+                f.write(r.content)
+
+            driver.quit()
 
     def set_icon_name(self, url):
-        if 'https://www.' in url:
-            url = url.removeprefix('https://www.')
-        else:
-            url = url.removeprefix('https://')
+        new_url = urlparse(url).hostname
+        image_name = ''
+        for i in range(len(new_url)):
+            if new_url[i] != '.':
+                image_name += new_url[i]
+            else:
+                image_name += '_'
+        return image_name + '.png'
 
-        for i in range(len(url)):
-            if url[i] == '.':
-                image_name = url[0:i] + '.png'
-                return image_name

@@ -32,7 +32,7 @@ def place_window_in_center(master, width, height, multiply=False, window_name=No
         screen_height = master.winfo_screenheight()
 
         x_coordinate = int((screen_width - width) * scale_factor / 2)
-        y_coordinate = int((screen_height - height) / 2)
+        y_coordinate = int((screen_height - height - 35) / 2)
 
         master.geometry('{}x{}+{}+{}'.format(width, height, x_coordinate, y_coordinate))
 
