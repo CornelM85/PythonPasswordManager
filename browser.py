@@ -188,3 +188,11 @@ class Browser:
                 image_name += '_'
         return image_name + '.png'
 
+    def is_login_field_present(self, url):
+        driver = self.__set_driver(headless=True)
+        driver.get(url)
+        for name in ['username', 'user_name', 'email', 'text', 'password']:
+            nr_of_elements = len(driver.find_elements(By.CSS_SELECTOR, f"input[type='{name}']"))
+            if nr_of_elements >= 1:
+                return True
+

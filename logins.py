@@ -38,7 +38,9 @@ class LoginsFrame(ctk.CTkFrame):
     def add_site_url(self):
         browser = Browser()
         url = browser.get_url()
-        if url != 'Not a login page!':
+        if url != 'Not a login page!' and browser.is_login_field_present(url):
+            ctk.CTkEntry(self, placeholder_text='Username/E-mail/Phone')
+            ctk.CTkEntry(self, placeholder_text='Password')
             self.add_site_info_to_db(url)
         self.get_db_info()
 
@@ -60,6 +62,13 @@ class LoginsFrame(ctk.CTkFrame):
         image = browser.set_icon_name(url)
         with open('db.json', 'r+') as f:
             db = json.load(f)
+            values = db.values()
+
+            for dictionary in values:
+                for v in dictionary.values():
+                    if v == url:
+                        return None
+
             db[len(db)] = {'url': url, 'image': image}
             f.seek(0)
             f.truncate()
@@ -79,10 +88,10 @@ class LoginsFrame(ctk.CTkFrame):
                         icon.grid(row=i, column=0, padx=(0, 15))
 
                     if k == 'url':
-                        url = ctk.CTkLabel(self.web_sites, height=10, width=630, text=urlparse(v).hostname, text_color='#00A2E8',
+                        url = ctk.CTkLabel(self.web_sites, height=10, width=630, text=urlparse(v).hostname,
+                                           text_color='#00A2E8',
                                            cursor='hand2', font=ctk.CTkFont('times', size=18, underline=True),
                                            anchor='w')
                         url.grid(row=i, column=1)
                         url.bind('<Button-1>', self.go_to_site)
                 i += 1
-
