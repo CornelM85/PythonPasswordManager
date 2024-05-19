@@ -6,13 +6,16 @@ from PIL import Image
 from browser import Browser
 
 from utility_functions import resource_path
+from get_credentials import Credentials
 
 
 class LoginsFrame(ctk.CTkFrame):
     def __init__(self, master, **kwargs):
         super().__init__(master, **kwargs)
 
-        space = 30 * ' '
+        self.ms = master
+
+        space = 38 * ' '
 
         self.add_new_btn = ctk.CTkButton(self, text='+ Add new', height=10, font=ctk.CTkFont('times', size=20),
                                          anchor='w', cursor='hand2', command=self.add_site_url)
@@ -27,7 +30,8 @@ class LoginsFrame(ctk.CTkFrame):
         self.delete_btn.grid(row=0, column=2, sticky='w')
 
         self.website_name = ctk.CTkLabel(self, height=10, font=ctk.CTkFont('times', size=15),
-                                         text=f' | Icon | Website{space}|', anchor='w')
+                                         text=f' | Icon | Website{space}| User{space}{6 * ' '}| Password{space}|',
+                                         anchor='w')
         self.website_name.grid(row=1, columnspan=12, pady=(10, 2), sticky='w')
 
         self.web_sites = ctk.CTkScrollableFrame(self, border_width=2, width=670, height=480)
@@ -39,10 +43,7 @@ class LoginsFrame(ctk.CTkFrame):
         browser = Browser()
         url = browser.get_url()
         if url != 'Not a login page!' and browser.is_login_field_present(url):
-            ctk.CTkEntry(self, placeholder_text='Username/E-mail/Phone')
-            ctk.CTkEntry(self, placeholder_text='Password')
-            self.add_site_info_to_db(url)
-        self.get_db_info()
+            Credentials(self.ms)
 
     def go_to_site(self, event):
         with open('db.json', 'r') as f:
@@ -56,10 +57,11 @@ class LoginsFrame(ctk.CTkFrame):
         browser = Browser()
         browser.go_to_url(url)
 
-    def add_site_info_to_db(self, url):
+    def add_site_info_to_db(self, url, user, pswd):
         browser = Browser()
         browser.get_site_icon(url)
         image = browser.set_icon_name(url)
+
         with open('db.json', 'r+') as f:
             db = json.load(f)
             values = db.values()
@@ -69,7 +71,7 @@ class LoginsFrame(ctk.CTkFrame):
                     if v == url:
                         return None
 
-            db[len(db)] = {'url': url, 'image': image}
+            db[len(db)] = {'url': url, 'image': image, 'user': user, 'password': pswd}
             f.seek(0)
             f.truncate()
             json.dump(db, f, indent=4)
@@ -85,13 +87,24 @@ class LoginsFrame(ctk.CTkFrame):
                     if k == 'image':
                         image = ctk.CTkImage(Image.open(resource_path(f'Images/{v}')), size=(15, 15))
                         icon = ctk.CTkLabel(self.web_sites, image=image, width=20, height=10, text='')
-                        icon.grid(row=i, column=0, padx=(0, 15))
+                        icon.grid(row=i, column=0, padx=(0, 18))
 
                     if k == 'url':
-                        url = ctk.CTkLabel(self.web_sites, height=10, width=630, text=urlparse(v).hostname,
+                        url = ctk.CTkLabel(self.web_sites, height=10, width=210, text=urlparse(v).hostname,
                                            text_color='#00A2E8',
                                            cursor='hand2', font=ctk.CTkFont('times', size=18, underline=True),
                                            anchor='w')
                         url.grid(row=i, column=1)
-                        url.bind('<Button-1>', self.go_to_site)
+
+                    if k == 'user':
+                        user = ctk.CTkLabel(self.web_sites, height=10, width=210, text=f'{len(v) * '$'}',
+                                            font=ctk.CTkFont('times', size=12), anchor='w')
+                        user.grid(row=i, column=2)
+
+                    if k == 'password':
+                        user = ctk.CTkLabel(self.web_sites, height=10, width=210, text=f'{len(v) * '*'}',
+                                            font=ctk.CTkFont('times', size=18), anchor='w')
+                        user.grid(row=i, column=3)
+
                 i += 1
+
