@@ -1,4 +1,5 @@
 import json
+
 import customtkinter as ctk
 from urllib.parse import urlparse
 from PIL import Image
@@ -7,11 +8,17 @@ from browser import Browser
 
 from utility_functions import resource_path
 from get_credentials import Credentials
+from properties_window import PropertiesWindow
 
 
 class LoginsFrame(ctk.CTkFrame):
     def __init__(self, master, **kwargs):
         super().__init__(master, **kwargs)
+
+        self.icon = None
+        self.url = None
+        self.user = None
+        self.password = None
 
         self.ms = master
 
@@ -45,13 +52,13 @@ class LoginsFrame(ctk.CTkFrame):
         if url != 'Not a login page!' and browser.is_login_field_present(url):
             Credentials(self.ms)
 
-    def go_to_site(self, event):
+    def go_to_site(self, short_url):
         with open('db.json', 'r') as f:
             data = json.load(f)
             values = data.values()
             for dictionary in values:
                 for k, v in dictionary.items():
-                    if k == 'url' and event.widget.master.cget('text') in v:
+                    if k == 'url' and short_url in v:
                         url = v
 
         browser = Browser()
@@ -71,7 +78,7 @@ class LoginsFrame(ctk.CTkFrame):
                     if v == url:
                         return None
 
-            db[len(db)] = {'url': url, 'image': image, 'user': user, 'password': pswd}
+            db[len(db)] = {'image': image, 'url': url, 'user': user, 'password': pswd}
             f.seek(0)
             f.truncate()
             json.dump(db, f, indent=4)
@@ -86,25 +93,34 @@ class LoginsFrame(ctk.CTkFrame):
                 for k, v in dictionary.items():
                     if k == 'image':
                         image = ctk.CTkImage(Image.open(resource_path(f'Images/{v}')), size=(15, 15))
-                        icon = ctk.CTkLabel(self.web_sites, image=image, width=20, height=10, text='')
-                        icon.grid(row=i, column=0, padx=(0, 18))
+                        self.icon = ctk.CTkLabel(self.web_sites, image=image, width=20, height=10, text='')
+                        self.icon.grid(row=i, column=0, padx=(0, 18))
 
                     if k == 'url':
-                        url = ctk.CTkLabel(self.web_sites, height=10, width=210, text=urlparse(v).hostname,
-                                           text_color='#00A2E8',
-                                           cursor='hand2', font=ctk.CTkFont('times', size=18, underline=True),
-                                           anchor='w')
-                        url.grid(row=i, column=1)
+                        self.url = ctk.CTkLabel(self.web_sites, height=10, width=210, text=urlparse(v).hostname,
+                                                text_color='#00A2E8', cursor='hand2',
+                                                font=ctk.CTkFont('times', size=18, underline=True), anchor='w')
+                        self.url.grid(row=i, column=1)
+                        self.url.bind('<Button-1>', self.on_click)
 
                     if k == 'user':
-                        user = ctk.CTkLabel(self.web_sites, height=10, width=210, text=f'{len(v) * '$'}',
-                                            font=ctk.CTkFont('times', size=12), anchor='w')
-                        user.grid(row=i, column=2)
+                        self.user = ctk.CTkLabel(self.web_sites, height=10, width=210, text=f'{len(v) * '$'}',
+                                                 font=ctk.CTkFont('times', size=12), anchor='w')
+                        self.user.grid(row=i, column=2)
 
                     if k == 'password':
-                        user = ctk.CTkLabel(self.web_sites, height=10, width=210, text=f'{len(v) * '*'}',
-                                            font=ctk.CTkFont('times', size=18), anchor='w')
-                        user.grid(row=i, column=3)
+                        self.password = ctk.CTkLabel(self.web_sites, height=10, width=210, text=f'{len(v) * '*'}',
+                                                     font=ctk.CTkFont('times', size=18), anchor='w')
+                        self.password.grid(row=i, column=3)
 
                 i += 1
+
+    def on_click(self, event):
+        short_url = event.widget.master.cget('text')
+        pointer_x = event.widget.master.winfo_pointerx()
+        pointer_y = event.widget.master.winfo_pointery()
+        properties_window = PropertiesWindow(self.ms, command=lambda: self.go_to_site(short_url))
+        properties_window.geometry('{}x{}+{}+{}'.format(100, 100, pointer_x, pointer_y))
+
+
 
