@@ -9,7 +9,7 @@ from browser import Browser
 from utility_functions import resource_path
 from get_credentials import Credentials
 from properties_window import PropertiesWindow
-
+from info_label import InfoLabel
 
 class LoginsFrame(ctk.CTkFrame):
     def __init__(self, master, **kwargs):
@@ -52,18 +52,6 @@ class LoginsFrame(ctk.CTkFrame):
         if url != 'Not a login page!' and browser.is_login_field_present(url):
             Credentials(self.ms)
 
-    def go_to_site(self, short_url):
-        with open('db.json', 'r') as f:
-            data = json.load(f)
-            values = data.values()
-            for dictionary in values:
-                for k, v in dictionary.items():
-                    if k == 'url' and short_url in v:
-                        url = v
-
-        browser = Browser()
-        browser.go_to_url(url)
-
     def add_site_info_to_db(self, url, user, pswd):
         browser = Browser()
         browser.get_site_icon(url)
@@ -101,7 +89,9 @@ class LoginsFrame(ctk.CTkFrame):
                                                 text_color='#00A2E8', cursor='hand2',
                                                 font=ctk.CTkFont('times', size=18, underline=True), anchor='w')
                         self.url.grid(row=i, column=1)
-                        self.url.bind('<Button-1>', self.on_click)
+                        self.url.bind('<Button-1>', self.on_click, add='+')
+                        self.url.bind('<Enter>', self.on_enter, add='+')
+                        self.url.bind('<Leave>', self.on_leave, add='+')
 
                     if k == 'user':
                         self.user = ctk.CTkLabel(self.web_sites, height=10, width=210, text=f'{len(v) * '$'}',
@@ -119,8 +109,13 @@ class LoginsFrame(ctk.CTkFrame):
         short_url = event.widget.master.cget('text')
         pointer_x = event.widget.master.winfo_pointerx()
         pointer_y = event.widget.master.winfo_pointery()
-        properties_window = PropertiesWindow(self.ms, command=lambda: self.go_to_site(short_url))
+        properties_window = PropertiesWindow(self.ms, short_url)
         properties_window.geometry('{}x{}+{}+{}'.format(100, 100, pointer_x, pointer_y))
 
+    def on_enter(self, event):
+        pointer_pos = event.widget.master.winfo_pointerxy()
+        info_window = InfoLabel(self.ms)
+        info_window.geometry('{}x{}+{}+{}'.format(90, 25, pointer_pos[0], pointer_pos[1]))
 
-
+    def on_leave(self, event):
+        event.widget.master.unbind(sequence='<Enter>')
