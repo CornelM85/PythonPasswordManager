@@ -6,7 +6,7 @@ from PIL import Image
 
 from browser import Browser
 
-from utility_functions import resource_path
+from utility_functions import resource_path, place_window_in_center
 from get_credentials import Credentials
 from properties_window import PropertiesWindow
 from info_label import InfoLabel
@@ -28,14 +28,6 @@ class LoginsFrame(ctk.CTkFrame):
                                          anchor='w', cursor='hand2', command=self.add_site_url)
         self.add_new_btn.grid(row=0, column=0, sticky='w')
 
-        self.edit_btn = ctk.CTkButton(self, text='Edit', height=10, font=ctk.CTkFont('times', size=20),
-                                      anchor='w', cursor='hand2')
-        self.edit_btn.grid(row=0, column=1, sticky='w')
-
-        self.delete_btn = ctk.CTkButton(self, text='Delete', height=10, font=ctk.CTkFont('times', size=20),
-                                        anchor='w', cursor='hand2')
-        self.delete_btn.grid(row=0, column=2, sticky='w')
-
         self.website_name = ctk.CTkLabel(self, height=10, font=ctk.CTkFont('times', size=15),
                                          text=f' | Icon | Website{space}| User{space}{6 * ' '}| Password{space}|',
                                          anchor='w')
@@ -50,7 +42,8 @@ class LoginsFrame(ctk.CTkFrame):
         browser = Browser()
         url = browser.get_url()
         if url != 'Not a login page!' and browser.is_login_field_present(url):
-            Credentials(self.ms)
+            credentials = Credentials(self.ms)
+            credentials.grab_set()
 
     def add_site_info_to_db(self, url, user, pswd):
         browser = Browser()
