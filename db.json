@@ -1,1 +1,8 @@
-{}
+{
+    "0": {
+        "image": "myanimelist_net.png",
+        "url": "https://myanimelist.net/login.php?from=%2F&",
+        "user": "user",
+        "password": "1234"
+    }
+}

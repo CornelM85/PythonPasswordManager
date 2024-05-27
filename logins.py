@@ -6,7 +6,7 @@ from PIL import Image
 
 from browser import Browser
 
-from utility_functions import resource_path, place_window_in_center
+from utility_functions import resource_path
 from get_credentials import Credentials
 from properties_window import PropertiesWindow
 from info_label import InfoLabel
@@ -84,7 +84,6 @@ class LoginsFrame(ctk.CTkFrame):
                         self.url.grid(row=i, column=1)
                         self.url.bind('<Button-1>', self.on_click, add='+')
                         self.url.bind('<Enter>', self.on_enter, add='+')
-                        self.url.bind('<Leave>', self.on_leave, add='+')
 
                     if k == 'user':
                         self.user = ctk.CTkLabel(self.web_sites, height=10, width=210, text=f'{len(v) * '$'}',
@@ -110,5 +109,3 @@ class LoginsFrame(ctk.CTkFrame):
         info_window = InfoLabel(self.ms)
         info_window.geometry('{}x{}+{}+{}'.format(90, 25, pointer_pos[0], pointer_pos[1]))
 
-    def on_leave(self, event):
-        event.widget.master.unbind(sequence='<Enter>')

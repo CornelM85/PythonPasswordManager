@@ -16,13 +16,13 @@ class Credentials(ctk.CTkToplevel):
 
         self.resizable(width=False, height=False)
 
-        self.user_field = ctk.CTkEntry(self, placeholder_text='Username/E-mail/Phone')
-        self.user_field.grid(row=0, column=0, padx=65, pady=10)
+        self.user_field = ctk.CTkEntry(self, placeholder_text='Username/E-mail/Phone', width=200)
+        self.user_field.grid(row=0, column=0, padx=35, pady=10)
 
-        self.pass_field = ctk.CTkEntry(self, placeholder_text='Password')
+        self.pass_field = ctk.CTkEntry(self, placeholder_text='Password', width=200)
         self.pass_field.grid(row=1, column=0)
 
-        self.confirm_pass_field = ctk.CTkEntry(self, placeholder_text='Confirm Password')
+        self.confirm_pass_field = ctk.CTkEntry(self, placeholder_text='Confirm Password', width=200)
         self.confirm_pass_field.grid(row=2, column=0, pady=10)
 
         self.submit = ctk.CTkButton(self, width=60, text='OK', command=self.add_to_db)

@@ -4,6 +4,8 @@ from menu import MenuFrame
 
 from logins import LoginsFrame
 
+from master_login import MasterLogin
+
 from utility_functions import place_window_in_center
 
 
@@ -19,6 +21,9 @@ class PasswordManager(ctk.CTk):
         self.__title_label = ctk.CTkLabel(self, text='Password Manager', text_color='white',
                                           font=ctk.CTkFont('times', size=30, weight='bold'))
         self.__title_label.grid(row=0, column=0, padx=20, pady=20)
+
+        self.master_login_frame = MasterLogin(self, fg_color='#242424')
+        self.master_login_frame.grid(row=0, column=1)
 
         self.menu_frame = MenuFrame(master=self, fg_color='#242424')
         self.menu_frame.grid(row=1, column=0, padx=40, sticky='n')
