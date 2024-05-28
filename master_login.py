@@ -1,6 +1,7 @@
 import customtkinter as ctk
 
 from master_login_window import MasterLoginWindow
+from master_register_window import MasterRegisterWindow
 
 
 class MasterLogin(ctk.CTkFrame):
@@ -48,4 +49,5 @@ class MasterLogin(ctk.CTkFrame):
             self.__register.grid(column=1)
 
         else:
-            pass
+            register_window = MasterRegisterWindow(self.master)
+            register_window.grab_set()
