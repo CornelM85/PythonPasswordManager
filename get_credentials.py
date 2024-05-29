@@ -12,7 +12,7 @@ class Credentials(ctk.CTkToplevel):
 
         self.title('Enter credentials')
 
-        place_window_in_center(master=self.ms, width=270, height=180, window_name=self, multiply=True)
+        place_window_in_center(master=self.ms, width=270, height=200, window_name=self, multiply=True)
 
         self.resizable(width=False, height=False)
 
