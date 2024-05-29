@@ -1,6 +1,8 @@
 import customtkinter as ctk
 from CTkMessagebox import CTkMessagebox
 
+from db_connection import ConnectDB
+
 from utility_functions import place_window_in_center
 
 
@@ -57,6 +59,8 @@ class MasterRegisterWindow(ctk.CTkToplevel):
                           icon='warning', message='Password fields don\'t match!', option_1='OK')
 
         else:
+            connection = ConnectDB()
+            connection.add_user(username=user, password=password, email=email)
             self.destroy()
 
     def __check_field_text(self, input_text):

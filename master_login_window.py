@@ -1,5 +1,7 @@
 import customtkinter as ctk
 
+from db_connection import ConnectDB
+
 from utility_functions import place_window_in_center
 
 
@@ -8,6 +10,10 @@ class MasterLoginWindow(ctk.CTkToplevel):
         super().__init__(master, **kwargs)
 
         self.ms = master
+
+        self.connection = ConnectDB()
+
+        self.user_id = 0
 
         self.title('Enter Credentials')
 
@@ -27,7 +33,8 @@ class MasterLoginWindow(ctk.CTkToplevel):
     def __submit(self):
         user = self.user_field.get()
         password = self.pass_field.get()
-        if user == 'User' and password == '1234':
+        if len(self.connection.check_credentials(username=user, password=password)) == 1:
             self.ms.master_login_frame.is_login(user)
+            self.ms.logins_frame.user_id = self.connection.get_user_id(username=user, password=password)
             self.destroy()
 

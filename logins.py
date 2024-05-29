@@ -5,11 +5,12 @@ from urllib.parse import urlparse
 from PIL import Image
 
 from browser import Browser
-
+from db_connection import ConnectDB
 from utility_functions import resource_path
 from get_credentials import Credentials
 from properties_window import PropertiesWindow
 from info_label import InfoLabel
+
 
 class LoginsFrame(ctk.CTkFrame):
     def __init__(self, master, **kwargs):
@@ -19,6 +20,7 @@ class LoginsFrame(ctk.CTkFrame):
         self.url = None
         self.user = None
         self.password = None
+        self.user_id = None
 
         self.ms = master
 
@@ -36,7 +38,7 @@ class LoginsFrame(ctk.CTkFrame):
         self.web_sites = ctk.CTkScrollableFrame(self, border_width=2, width=670, height=480)
         self.web_sites.grid(row=2, columnspan=12)
 
-        self.get_db_info()
+        # self.get_db_info()
 
     def add_site_url(self):
         browser = Browser()
@@ -45,24 +47,14 @@ class LoginsFrame(ctk.CTkFrame):
             credentials = Credentials(self.ms)
             credentials.grab_set()
 
-    def add_site_info_to_db(self, url, user, pswd):
+    def add_site_info_to_db(self, url, user, password, url_name):
+        connection = ConnectDB()
         browser = Browser()
         browser.get_site_icon(url)
         image = browser.set_icon_name(url)
+        connection.add_website(user_id=self.user_id, login_name=user, login_password=password, url=url,
+                               url_name_displayed=url_name, image_name=image)
 
-        with open('db.json', 'r+') as f:
-            db = json.load(f)
-            values = db.values()
-
-            for dictionary in values:
-                for v in dictionary.values():
-                    if v == url:
-                        return None
-
-            db[len(db)] = {'image': image, 'url': url, 'user': user, 'password': pswd}
-            f.seek(0)
-            f.truncate()
-            json.dump(db, f, indent=4)
 
     def get_db_info(self):
         with open('db.json', 'r') as f:
