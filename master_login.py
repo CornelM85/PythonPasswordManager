@@ -8,6 +8,8 @@ class MasterLogin(ctk.CTkFrame):
     def __init__(self, master, **kwargs):
         super().__init__(master, **kwargs)
 
+        self.ms = master
+
         self.__greetings_label = ctk.CTkLabel(self, height=10, text=f'Hello, ', font=ctk.CTkFont('times', size=18))
 
         self.__name_label = ctk.CTkLabel(self, height=10, text='',
@@ -38,8 +40,10 @@ class MasterLogin(ctk.CTkFrame):
 
     def __is_logout(self):
         if self.__register.cget('text') == 'Logout':
-            self.__greetings_label.destroy()
-            self.__name_label.destroy()
+            self.__greetings_label.forget()
+            self.__name_label.forget()
+
+            self.ms.logins_frame.user_id = None
 
             self.__sign_in = ctk.CTkButton(self, height=10, text='Sign In', font=ctk.CTkFont('times', size=18),
                                            fg_color='transparent', command=self.__on_click)

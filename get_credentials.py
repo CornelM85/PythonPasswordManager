@@ -1,5 +1,6 @@
 import customtkinter as ctk
 from browser import Browser
+from db_connection import ConnectDB
 from utility_functions import place_window_in_center
 from CTkMessagebox import CTkMessagebox
 
@@ -54,7 +55,7 @@ class Credentials(ctk.CTkToplevel):
 
         else:
             self.destroy()
-            self.ms.logins_frame.add_site_info_to_db(url, user, password, url_name)
+            self.add_site_info_to_db(url, user, password, url_name)
             self.ms.logins_frame.get_db_info()
 
     def __check_field_text(self, input_text):
@@ -65,3 +66,12 @@ class Credentials(ctk.CTkToplevel):
     def __message(self, message_text):
         CTkMessagebox(self, title='Alert', width=150, height=50,
                       icon='warning', message=message_text, option_1='OK')
+
+    def add_site_info_to_db(self, url, user, password, url_name):
+        connection = ConnectDB()
+        browser = Browser()
+        browser.get_site_icon(url)
+        image = browser.set_icon_name(url)
+        user_id = self.ms.logins_frame.user_id
+        connection.add_website(user_id=user_id, login_name=user, login_password=password, url=url,
+                               url_name_displayed=url_name, image_name=image)

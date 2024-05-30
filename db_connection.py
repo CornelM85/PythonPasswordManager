@@ -74,3 +74,13 @@ class ConnectDB:
         self.cursor.execute(query, parameters)
         return self.cursor.fetchall()
 
+    def get_all_websites(self, user_id):
+        query = """
+                SELECT login_name, login_password, url_name_displayed, image_name FROM websites
+                WHERE user_id = ?;
+                """
+        self.cursor.execute(query, user_id)
+        return self.cursor.fetchall()
+
+# con = ConnectDB()
+# print(con.get_all_websites('5'))

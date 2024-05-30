@@ -13,8 +13,6 @@ class MasterLoginWindow(ctk.CTkToplevel):
 
         self.connection = ConnectDB()
 
-        self.user_id = 0
-
         self.title('Enter Credentials')
 
         place_window_in_center(master=self.ms, width=270, height=140, window_name=self, multiply=True)
@@ -36,5 +34,6 @@ class MasterLoginWindow(ctk.CTkToplevel):
         if len(self.connection.check_credentials(username=user, password=password)) == 1:
             self.ms.master_login_frame.is_login(user)
             self.ms.logins_frame.user_id = self.connection.get_user_id(username=user, password=password)
+            self.ms.logins_frame.get_db_info()
             self.destroy()
 
