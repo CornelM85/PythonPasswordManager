@@ -1,18 +1,16 @@
-import json
-
 import customtkinter as ctk
-
 from browser import Browser
+from db_connection import ConnectDB
 
 
 class PropertiesWindow(ctk.CTkToplevel):
-    def __init__(self, master, short_url, **kwargs):
+    def __init__(self, master, user_id, url_name_displayed, **kwargs):
         super().__init__(master, **kwargs)
 
         self.overrideredirect(True)
 
         self.__go_url = ctk.CTkButton(self, text='Go to site', fg_color='transparent', hover_color='green',
-                                      command=lambda: self.__go_to_site(short_url=short_url), width=100, height=10)
+                                      command=lambda: self.__go_to_site(user_id, url_name_displayed), width=100, height=10)
         self.__go_url.pack()
 
         self.__edit = ctk.CTkButton(self, text='Edit', fg_color='transparent', hover_color='green',
@@ -25,15 +23,9 @@ class PropertiesWindow(ctk.CTkToplevel):
 
         self.bind('<Leave>', self.__on_leave)
 
-    def __go_to_site(self, short_url):
-        with open('db.json', 'r') as f:
-            data = json.load(f)
-            values = data.values()
-            for dictionary in values:
-                for k, v in dictionary.items():
-                    if k == 'url' and short_url in v:
-                        url = v
-
+    def __go_to_site(self, user_id, url_name_displayed):
+        connection = ConnectDB()
+        url = connection.get_website(user_id=user_id, url_name_displayed=url_name_displayed)
         browser = Browser()
         browser.go_to_url(url)
 

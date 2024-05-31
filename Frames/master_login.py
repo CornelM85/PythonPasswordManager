@@ -1,7 +1,6 @@
 import customtkinter as ctk
-
-from master_login_window import MasterLoginWindow
-from master_register_window import MasterRegisterWindow
+from Windows.master_login_window import MasterLoginWindow
+from Windows.master_register_window import MasterRegisterWindow
 
 
 class MasterLogin(ctk.CTkFrame):
@@ -10,7 +9,7 @@ class MasterLogin(ctk.CTkFrame):
 
         self.ms = master
 
-        self.__greetings_label = ctk.CTkLabel(self, height=10, text=f'Hello, ', font=ctk.CTkFont('times', size=18))
+        self.__greetings_label = ctk.CTkLabel(self, height=10, text='Hello, ', font=ctk.CTkFont('times', size=18))
 
         self.__name_label = ctk.CTkLabel(self, height=10, text='',
                                          font=ctk.CTkFont('times', size=18), text_color='coral')
@@ -43,8 +42,6 @@ class MasterLogin(ctk.CTkFrame):
             self.__greetings_label.forget()
             self.__name_label.forget()
 
-            self.ms.logins_frame.user_id = None
-
             self.__sign_in = ctk.CTkButton(self, height=10, text='Sign In', font=ctk.CTkFont('times', size=18),
                                            fg_color='transparent', command=self.__on_click)
             self.__sign_in.grid(row=0, column=0)
@@ -52,6 +49,11 @@ class MasterLogin(ctk.CTkFrame):
             self.__register.configure(text='Register')
             self.__register.grid(column=1)
 
+            self.ms.logins_frame.refresh()
+
         else:
             register_window = MasterRegisterWindow(self.master)
             register_window.grab_set()
+
+    def get_username(self):
+        return self.__name_label.cget('text')

@@ -1,8 +1,7 @@
 import customtkinter as ctk
-
 from db_connection import ConnectDB
-
 from utility_functions import place_window_in_center
+from Frames.websites_info import WebsitesInfo
 
 
 class MasterLoginWindow(ctk.CTkToplevel):
@@ -34,6 +33,6 @@ class MasterLoginWindow(ctk.CTkToplevel):
         if len(self.connection.check_credentials(username=user, password=password)) == 1:
             self.ms.master_login_frame.is_login(user)
             self.ms.logins_frame.user_id = self.connection.get_user_id(username=user, password=password)
-            self.ms.logins_frame.get_db_info()
+            WebsitesInfo(self.ms)
             self.destroy()
 

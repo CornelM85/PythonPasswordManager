@@ -82,5 +82,12 @@ class ConnectDB:
         self.cursor.execute(query, user_id)
         return self.cursor.fetchall()
 
-# con = ConnectDB()
-# print(con.get_all_websites('5'))
+    def get_website(self, user_id, url_name_displayed):
+        query = """
+                SELECT url FROM websites
+                WHERE user_id = ? and url_name_displayed = ?;
+                """
+
+        parameters = (user_id, url_name_displayed)
+        self.cursor.execute(query, parameters)
+        return self.cursor.fetchone()[0]

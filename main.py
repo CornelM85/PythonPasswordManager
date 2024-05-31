@@ -1,11 +1,7 @@
 import customtkinter as ctk
-
-from menu import MenuFrame
-
-from logins import LoginsFrame
-
-from master_login import MasterLogin
-
+from Frames.menu import MenuFrame
+from Frames.logins import LoginsFrame
+from Frames.master_login import MasterLogin
 from utility_functions import place_window_in_center
 
 

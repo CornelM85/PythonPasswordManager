@@ -3,9 +3,10 @@ from browser import Browser
 from db_connection import ConnectDB
 from utility_functions import place_window_in_center
 from CTkMessagebox import CTkMessagebox
+from Frames.websites_info import WebsitesInfo
 
 
-class Credentials(ctk.CTkToplevel):
+class CredentialsWindow(ctk.CTkToplevel):
     def __init__(self, master, **kwargs):
         super().__init__(master, **kwargs)
 
@@ -56,7 +57,7 @@ class Credentials(ctk.CTkToplevel):
         else:
             self.destroy()
             self.add_site_info_to_db(url, user, password, url_name)
-            self.ms.logins_frame.get_db_info()
+            WebsitesInfo(self.ms)
 
     def __check_field_text(self, input_text):
         for char in input_text:
