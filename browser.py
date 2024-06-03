@@ -1,12 +1,12 @@
-import time
-import keyboard
 import os
-import requests
-import psutil
-import json
+import time
 from urllib.parse import urlparse
-from selenium import webdriver
+
+import keyboard
+import psutil
+import requests
 from pywinauto import Application
+from selenium import webdriver
 from selenium.webdriver import Keys
 from selenium.webdriver.common.by import By
 
@@ -135,17 +135,18 @@ class Browser:
 
         return driver
 
-    def go_to_url(self, url: str):
+    def go_to_url(self, url: str, username: str, password: str):
 
         if self.get_cmd_line() is True:
             driver = self.__set_driver()
-            driver.switch_to.new_window('tab')
 
         else:
             self.kill_process()
             driver = self.__set_driver()
             driver.close()
             driver = self.__set_driver()
+
+        if self.get_url() != url:
             driver.switch_to.new_window('tab')
 
         driver.get(url)
@@ -154,14 +155,14 @@ class Browser:
             nr_of_elements = len(driver.find_elements(By.CSS_SELECTOR, f"input[type='{name}']"))
             if nr_of_elements == 1:
                 driver.find_element(By.CSS_SELECTOR, f"input[type='{name}']").send_keys(Keys.CONTROL + 'A')
-                driver.find_element(By.CSS_SELECTOR, f"input[type='{name}']").send_keys('username')
+                driver.find_element(By.CSS_SELECTOR, f"input[type='{name}']").send_keys({username})
             elif nr_of_elements > 1:
                 driver.find_element(By.XPATH, "//form[@method='post']//input[1]").send_keys(Keys.CONTROL + 'A')
-                driver.find_element(By.XPATH, "//form[@method='post']//input[1]").send_keys('username')
+                driver.find_element(By.XPATH, "//form[@method='post']//input[1]").send_keys({username})
 
-        driver.find_element(By.CSS_SELECTOR, "input[type='password']").send_keys('123456789')
+        driver.find_element(By.CSS_SELECTOR, "input[type='password']").send_keys({password})
 
-    def get_site_icon(self, url):
+    def get_site_icon(self, url: str):
         if not os.path.isfile(f'/Images/{self.set_icon_name(url)}'):
             driver = self.__set_driver(headless=True)
             driver.get(url)
@@ -178,7 +179,7 @@ class Browser:
 
             driver.quit()
 
-    def set_icon_name(self, url):
+    def set_icon_name(self, url: str):
         new_url = urlparse(url).hostname
         image_name = ''
         for i in range(len(new_url)):
@@ -188,7 +189,7 @@ class Browser:
                 image_name += '_'
         return image_name + '.png'
 
-    def is_login_field_present(self, url):
+    def is_login_field_present(self, url: str):
         driver = self.__set_driver(headless=True)
         driver.get(url)
         for name in ['username', 'user_name', 'email', 'text', 'password']:

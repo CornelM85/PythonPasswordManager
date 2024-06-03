@@ -59,16 +59,16 @@ class CredentialsWindow(ctk.CTkToplevel):
             self.add_site_info_to_db(url, user, password, url_name)
             WebsitesInfo(self.ms)
 
-    def __check_field_text(self, input_text):
+    def __check_field_text(self, input_text: str):
         for char in input_text:
             if char == ' ':
                 return False
 
-    def __message(self, message_text):
+    def __message(self, message_text: str):
         CTkMessagebox(self, title='Alert', width=150, height=50,
                       icon='warning', message=message_text, option_1='OK')
 
-    def add_site_info_to_db(self, url, user, password, url_name):
+    def add_site_info_to_db(self, url: str, user: str, password: str, url_name: str):
         connection = ConnectDB()
         browser = Browser()
         browser.get_site_icon(url)

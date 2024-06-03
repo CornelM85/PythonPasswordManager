@@ -2,7 +2,6 @@ import customtkinter as ctk
 from PIL import Image
 from db_connection import ConnectDB
 from Windows.properties_window import PropertiesWindow
-from Windows.info_label import InfoLabel
 from utility_functions import resource_path
 
 
@@ -24,7 +23,6 @@ class WebsitesInfo(ctk.CTkFrame):
                                font=ctk.CTkFont('times', size=18, underline=True), anchor='w')
             url.grid(row=i, column=1)
             url.bind('<Button-1>', self.on_click, add='+')
-            url.bind('<Enter>', self.on_enter, add='+')
 
             user = ctk.CTkLabel(self.ms.logins_frame.web_sites, height=10, width=210, text=f'{len(website[0]) * '$'}',
                                 font=ctk.CTkFont('times', size=12), anchor='w')
@@ -40,9 +38,5 @@ class WebsitesInfo(ctk.CTkFrame):
         pointer_x = event.widget.master.winfo_pointerx()
         pointer_y = event.widget.master.winfo_pointery()
         properties_window = PropertiesWindow(self.ms, user_id=user_id, url_name_displayed=url_text_displayed)
-        properties_window.geometry('{}x{}+{}+{}'.format(100, 100, pointer_x, pointer_y))
+        properties_window.geometry('{}x{}+{}+{}'.format(100, 65, pointer_x, pointer_y))
 
-    def on_enter(self, event):
-        pointer_pos = event.widget.master.winfo_pointerxy()
-        info_window = InfoLabel(self.ms)
-        info_window.geometry('{}x{}+{}+{}'.format(90, 25, pointer_pos[0], pointer_pos[1]))

@@ -37,7 +37,7 @@ class ConnectDB:
         self.connection.commit()
         # self.connection.close()
 
-    def add_user(self, username, password, email):
+    def add_user(self, username: str, password: str, email: str):
         query = """
                 INSERT INTO users (username, password, email)
                 VALUES (?, ?, ?);
@@ -46,7 +46,8 @@ class ConnectDB:
         self.cursor.execute(query, parameters)
         self.connection.commit()
 
-    def add_website(self, user_id, login_name, login_password, url, url_name_displayed, image_name):
+    def add_website(self, user_id: str, login_name: str, login_password: str,
+                    url: str, url_name_displayed: str, image_name: str):
         query = """
                 INSERT INTO websites (user_id, login_name, login_password, url, url_name_displayed, image_name)
                 VALUES (?, ?, ?, ?, ?, ?);
@@ -55,7 +56,7 @@ class ConnectDB:
         self.cursor.execute(query, parameters)
         self.connection.commit()
 
-    def get_user_id(self, username, password):
+    def get_user_id(self, username: str, password: str):
         query = """
                 SELECT id FROM users
                 WHERE username = ? AND password = ?;
@@ -65,7 +66,7 @@ class ConnectDB:
         self.cursor.execute(query, parameters)
         return self.cursor.fetchone()[0]
 
-    def check_credentials(self, username, password):
+    def check_credentials(self, username: str, password: str):
         query = """
                 SELECT * FROM users
                 WHERE username = ? AND password = ?;
@@ -74,7 +75,7 @@ class ConnectDB:
         self.cursor.execute(query, parameters)
         return self.cursor.fetchall()
 
-    def get_all_websites(self, user_id):
+    def get_all_websites(self, user_id: str):
         query = """
                 SELECT login_name, login_password, url_name_displayed, image_name FROM websites
                 WHERE user_id = ?;
@@ -82,7 +83,7 @@ class ConnectDB:
         self.cursor.execute(query, user_id)
         return self.cursor.fetchall()
 
-    def get_website(self, user_id, url_name_displayed):
+    def get_website(self, user_id: str, url_name_displayed: str):
         query = """
                 SELECT url FROM websites
                 WHERE user_id = ? and url_name_displayed = ?;
@@ -91,3 +92,24 @@ class ConnectDB:
         parameters = (user_id, url_name_displayed)
         self.cursor.execute(query, parameters)
         return self.cursor.fetchone()[0]
+
+    def get_website_credentials(self, user_id: str, url_name_displayed: str):
+        query = """
+                SELECT login_name, login_password FROM websites
+                WHERE user_id = ? and url_name_displayed = ?;
+                """
+
+        parameters = (user_id, url_name_displayed)
+        self.cursor.execute(query, parameters)
+        return self.cursor.fetchone()
+
+    def delete_website(self, user_id: str, url_name_displayed: str):
+        query = """
+                DELETE FROM websites
+                WHERE user_id = ? and url_name_displayed = ?;
+                """
+
+        parameters = (user_id, url_name_displayed)
+        self.cursor.execute(query, parameters)
+        self.connection.commit()
+        return True

@@ -3,7 +3,7 @@ import os
 import sys
 
 
-def place_window_in_center(master, width, height, multiply=False, window_name=None):
+def place_window_in_center(master, width: int, height: int, multiply=False, window_name=None):
     """
     Center the Application in the middle of the screen (window_name is None)
         Center the window in the middle of the Application window (window_name is not None)
@@ -49,6 +49,7 @@ def place_window_in_center(master, width, height, multiply=False, window_name=No
 
         window_name.geometry('{}x{}+{}+{}'.format(width, height, x + root_x, y + root_y))
 
-def resource_path(relative_path):
+
+def resource_path(relative_path: str):
     base_path = getattr(sys, '_MEIPASS', os.path.dirname(os.path.abspath(__file__)))
     return os.path.join(base_path, relative_path)
