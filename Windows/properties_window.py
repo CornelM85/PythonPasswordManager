@@ -1,6 +1,7 @@
 import customtkinter as ctk
 from browser import Browser
 from db_connection import ConnectDB
+from .edit_info import EditInfoWindow
 
 
 class PropertiesWindow(ctk.CTkToplevel):
@@ -22,7 +23,7 @@ class PropertiesWindow(ctk.CTkToplevel):
         self.__go_url.pack()
 
         self.__edit = ctk.CTkButton(self, text='Edit', fg_color='transparent', hover_color='green',
-                                    width=100, height=10)
+                                    width=100, height=10, command=self.__edit)
         self.__edit.pack()
 
         self.__delete = ctk.CTkButton(self, text='Delete', fg_color='transparent', hover_color='green',
@@ -34,7 +35,7 @@ class PropertiesWindow(ctk.CTkToplevel):
     def __go_to_site(self):
         url = self.__connection.get_website(user_id=self.__user_id, url_name_displayed=self.__url_name_displayed)
         credentials = self.__connection.get_website_credentials(user_id=self.__user_id,
-                                                         url_name_displayed=self.__url_name_displayed)
+                                                                url_name_displayed=self.__url_name_displayed)
         browser = Browser()
         browser.go_to_url(url, credentials[0], credentials[1])
 
@@ -45,3 +46,6 @@ class PropertiesWindow(ctk.CTkToplevel):
     def __delete(self):
         self.__connection.delete_website(user_id=self.__user_id, url_name_displayed=self.__url_name_displayed)
         self.ms.logins_frame.refresh()
+
+    def __edit(self):
+        EditInfoWindow(self.ms, user_id=self.__user_id, url_name_displayed=self.__url_name_displayed)
