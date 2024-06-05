@@ -1,7 +1,7 @@
 import customtkinter as ctk
 from utility_functions import place_window_in_center
 from db_connection import ConnectDB
-import keyboard
+from .field_update_window import FieldUpdateWindow
 
 
 class EditInfoWindow(ctk.CTkToplevel):
@@ -59,15 +59,7 @@ class EditInfoWindow(ctk.CTkToplevel):
         self.pass_field.configure(text=credentials[1])
 
     def __command(self):
-        new_value = ctk.CTkEntry(self, placeholder_text='new value', width=150, height=10)
-        new_value.grid(row=0, column=0, pady=10, padx=30)
-        if new_value.get() != '':
-            value = new_value.get()
-            keyboard.wait('Enter')
-            self.__connection.update_website_info(user_id=self.__user_id, url_name_displayed=self.__url_name_displayed,
-                                                  new_value=value)
-            new_value.destroy()
+        field_update = FieldUpdateWindow(self, user_id=self.__user_id, url_name_displayed=self.__url_name_displayed)
+        field_update.grab_set()
+        self.__get_data()
 
-    def __get_value(self):
-        new_value = ctk.CTkEntry(self, placeholder_text='new value', width=150, height=10, anchor='w')
-        new_value.grid(row=0, column=0, pady=10, padx=30)
