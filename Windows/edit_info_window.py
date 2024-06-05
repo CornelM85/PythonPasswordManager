@@ -21,26 +21,28 @@ class EditInfoWindow(ctk.CTkToplevel):
 
         self.resizable(width=False, height=False)
 
-        self.url_field = ctk.CTkLabel(self, width=150, height=10, text=self.__url_name_displayed,
+        self.url_field = ctk.CTkLabel(self, width=150, height=10, text='',
                                       font=ctk.CTkFont('times', size=18), anchor='w')
         self.url_field.grid(row=0, column=0, pady=10, padx=30)
 
         self.url_field_button = ctk.CTkButton(self, text='Edit', width=30, fg_color='transparent', hover_color='green',
-                                              command=self.__command)
+                                              command=self.__new_url_name_displayed)
         self.url_field_button.grid(row=0, column=1, sticky='e')
 
         self.user_field = ctk.CTkLabel(self, width=150, height=10, text='',
                                        font=ctk.CTkFont('times', size=18), anchor='w')
         self.user_field.grid(row=1, column=0)
 
-        self.user_field_button = ctk.CTkButton(self, text='Edit', width=30, fg_color='transparent', hover_color='green')
+        self.user_field_button = ctk.CTkButton(self, text='Edit', width=30, fg_color='transparent', hover_color='green',
+                                               command=self.__new_login_name)
         self.user_field_button.grid(row=1, column=1, sticky='e')
 
         self.pass_field = ctk.CTkLabel(self, width=150, height=10, text='',
                                        font=ctk.CTkFont('times', size=18), anchor='w')
         self.pass_field.grid(row=2, column=0, pady=10)
 
-        self.pass_field_button = ctk.CTkButton(self, text='Edit', width=30, fg_color='transparent', hover_color='green')
+        self.pass_field_button = ctk.CTkButton(self, text='Edit', width=30, fg_color='transparent', hover_color='green',
+                                               command=self.__new_login_password)
         self.pass_field_button.grid(row=2, column=1, sticky='e')
 
         self.submit = ctk.CTkButton(self, width=100, text='OK', command=self.__submit)
@@ -55,11 +57,22 @@ class EditInfoWindow(ctk.CTkToplevel):
         credentials = self.__connection.get_website_credentials(user_id=self.__user_id,
                                                                 url_name_displayed=self.__url_name_displayed)
 
+        self.url_field.configure(text=self.__url_name_displayed)
         self.user_field.configure(text=credentials[0])
         self.pass_field.configure(text=credentials[1])
 
-    def __command(self):
-        field_update = FieldUpdateWindow(self, user_id=self.__user_id, url_name_displayed=self.__url_name_displayed)
+    def __new_url_name_displayed(self):
+        field_update = FieldUpdateWindow(self, user_id=self.__user_id, url_name_displayed=self.__url_name_displayed,
+                                         field_update='url')
         field_update.grab_set()
-        self.__get_data()
+
+    def __new_login_name(self):
+        field_update = FieldUpdateWindow(self, user_id=self.__user_id, url_name_displayed=self.__url_name_displayed,
+                                         field_update='user')
+        field_update.grab_set()
+
+    def __new_login_password(self):
+        field_update = FieldUpdateWindow(self, user_id=self.__user_id, url_name_displayed=self.__url_name_displayed,
+                                         field_update='password')
+        field_update.grab_set()
 

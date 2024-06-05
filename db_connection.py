@@ -114,10 +114,32 @@ class ConnectDB:
         self.connection.commit()
         return True
 
-    def update_website_info(self, user_id: str, url_name_displayed: str, new_value: str):
+    def update_website_url_name_displayed(self, user_id: str, url_name_displayed: str, new_value: str):
         query = """
                 UPDATE websites
                 SET url_name_displayed = ?
+                WHERE user_id = ? and url_name_displayed = ?;
+                """
+        parameters = (new_value, user_id, url_name_displayed)
+        self.cursor.execute(query, parameters)
+        self.connection.commit()
+        return True
+
+    def update_website_login_name(self, user_id: str, url_name_displayed: str, new_value: str):
+        query = """
+                UPDATE websites
+                SET login_name = ?
+                WHERE user_id = ? and url_name_displayed = ?;
+                """
+        parameters = (new_value, user_id, url_name_displayed)
+        self.cursor.execute(query, parameters)
+        self.connection.commit()
+        return True
+
+    def update_website_login_password(self, user_id: str, url_name_displayed: str, new_value: str):
+        query = """
+                UPDATE websites
+                SET login_password = ?
                 WHERE user_id = ? and url_name_displayed = ?;
                 """
         parameters = (new_value, user_id, url_name_displayed)

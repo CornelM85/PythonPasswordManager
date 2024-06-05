@@ -1,7 +1,7 @@
 import customtkinter as ctk
 from browser import Browser
 from db_connection import ConnectDB
-from .edit_info import EditInfoWindow
+from .edit_info_window import EditInfoWindow
 
 
 class PropertiesWindow(ctk.CTkToplevel):
