@@ -19,17 +19,17 @@ class FieldUpdateWindow(ctk.CTkToplevel):
 
         self.resizable(width=False, height=False)
 
-        self.new_value = ctk.CTkEntry(self, placeholder_text='new value', width=200, height=10)
+        self.new_value = ctk.CTkEntry(self, placeholder_text='New Value', width=200, height=10)
         self.new_value.grid(row=0, column=0, pady=10, padx=35)
 
-        self.submit = ctk.CTkButton(self, width=60, text='OK', command=self.__submit)
-        self.submit.grid(row=1, column=0)
+        self.__submit_button = ctk.CTkButton(self, width=60, text='OK', command=self.__submit)
+        self.__submit_button.grid(row=1, column=0)
 
         if self.__field_update == 'password':
             self.__set_height = 110
-            self.confirm_new_value = ctk.CTkEntry(self, placeholder_text='conform new value', width=200, height=10)
+            self.confirm_new_value = ctk.CTkEntry(self, placeholder_text='Confirm New Value', width=200, height=10)
             self.confirm_new_value.grid(row=1, column=0)
-            self.submit.grid(row=2, column=0, pady=10)
+            self.__submit_button.grid(row=2, column=0, pady=10)
 
         place_window_in_center(master=self.ms, width=270, height=self.__set_height, window_name=self, multiply=True)
 

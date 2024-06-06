@@ -1,8 +1,6 @@
 import customtkinter as ctk
 from CTkMessagebox import CTkMessagebox
-
 from db_connection import ConnectDB
-
 from utility_functions import place_window_in_center
 
 
@@ -18,26 +16,26 @@ class MasterRegisterWindow(ctk.CTkToplevel):
 
         self.resizable(width=False, height=False)
 
-        self.user_field = ctk.CTkEntry(self, placeholder_text='Username', width=200)
-        self.user_field.grid(row=0, column=0, padx=35, pady=10)
+        self.__user_field = ctk.CTkEntry(self, placeholder_text='Username', width=200)
+        self.__user_field.grid(row=0, column=0, padx=35, pady=10)
 
-        self.email_field = ctk.CTkEntry(self, placeholder_text='Email', width=200)
-        self.email_field.grid(row=1, column=0)
+        self.__email_field = ctk.CTkEntry(self, placeholder_text='Email', width=200)
+        self.__email_field.grid(row=1, column=0)
 
-        self.pass_field = ctk.CTkEntry(self, placeholder_text='Password', width=200)
-        self.pass_field.grid(row=2, column=0, pady=10)
+        self.__pass_field = ctk.CTkEntry(self, placeholder_text='Password', width=200)
+        self.__pass_field.grid(row=2, column=0, pady=10)
 
-        self.confirm_pass_field = ctk.CTkEntry(self, placeholder_text='Confirm Password', width=200)
-        self.confirm_pass_field.grid(row=3, column=0)
+        self.__confirm_pass_field = ctk.CTkEntry(self, placeholder_text='Confirm Password', width=200)
+        self.__confirm_pass_field.grid(row=3, column=0)
 
-        self.submit = ctk.CTkButton(self, width=60, text='OK', command=self.__submit)
-        self.submit.grid(row=4, column=0, pady=10)
+        self.__submit_button = ctk.CTkButton(self, width=60, text='OK', command=self.__submit)
+        self.__submit_button.grid(row=4, column=0, pady=10)
 
     def __submit(self):
-        user = self.user_field.get()
-        password = self.pass_field.get()
-        confirm_password = self.confirm_pass_field.get()
-        email = self.email_field.get()
+        user = self.__user_field.get()
+        password = self.__pass_field.get()
+        confirm_password = self.__confirm_pass_field.get()
+        email = self.__email_field.get()
 
         if user == '' or password == '' or confirm_password == '' or email == '':
             self.__message('All the fields must be filled!')
@@ -73,7 +71,7 @@ class MasterRegisterWindow(ctk.CTkToplevel):
                       icon='warning', message=message_text, option_1='OK')
 
     def __check_valid_email(self):
-        email = self.email_field.get()
+        email = self.__email_field.get()
         if email.count('@') == 1:
             return True
         else:

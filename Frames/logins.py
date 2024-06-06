@@ -1,6 +1,7 @@
 import customtkinter as ctk
+from Frames.websites_info import WebsitesInfo
 from browser import Browser
-from Windows.credentials_window import CredentialsWindow
+from Windows.website_credentials_window import CredentialsWindow
 from Windows.master_login_window import MasterLoginWindow
 
 
@@ -38,7 +39,9 @@ class LoginsFrame(ctk.CTkFrame):
             credentials = CredentialsWindow(self.ms)
             credentials.grab_set()
 
-    def refresh(self):
+    def refresh(self, on_login=True):
         self.web_sites.destroy()
         self.web_sites = ctk.CTkScrollableFrame(self, border_width=2, width=670, height=480)
         self.web_sites.grid(row=2, columnspan=12)
+        if on_login is False:
+            WebsitesInfo(self.ms)
