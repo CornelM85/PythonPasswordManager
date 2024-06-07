@@ -156,9 +156,11 @@ class Browser:
             if nr_of_elements == 1:
                 driver.find_element(By.CSS_SELECTOR, f"input[type='{name}']").send_keys(Keys.CONTROL + 'A')
                 driver.find_element(By.CSS_SELECTOR, f"input[type='{name}']").send_keys({username})
+                break
             elif nr_of_elements > 1:
                 driver.find_element(By.XPATH, "//form[@method='post']//input[1]").send_keys(Keys.CONTROL + 'A')
                 driver.find_element(By.XPATH, "//form[@method='post']//input[1]").send_keys({username})
+                break
 
         driver.find_element(By.CSS_SELECTOR, "input[type='password']").send_keys({password})
 

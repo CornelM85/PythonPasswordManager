@@ -1,8 +1,10 @@
 import customtkinter as ctk
+from CTkMessagebox import CTkMessagebox
 from Frames.websites_info import WebsitesInfo
 from browser import Browser
 from Windows.website_credentials_window import CredentialsWindow
 from Windows.master_login_window import MasterLoginWindow
+from db_connection import ConnectDB
 
 
 class LoginsFrame(ctk.CTkFrame):
@@ -31,7 +33,11 @@ class LoginsFrame(ctk.CTkFrame):
         browser = Browser()
         url = browser.get_url()
 
-        if self.ms.master_login_frame.get_username() == '':
+        if self.__is_url_in_db(url):
+            CTkMessagebox(self, title='Alert', width=500, height=50, icon='warning',
+                          message='You already have this website info stored in database!', option_1='OK')
+
+        elif self.ms.master_login_frame.get_username() == '':
             master_login_window = MasterLoginWindow(self.ms)
             master_login_window.grab_set()
 
@@ -45,3 +51,10 @@ class LoginsFrame(ctk.CTkFrame):
         self.web_sites.grid(row=2, columnspan=12)
         if on_login is False:
             WebsitesInfo(self.ms)
+
+    def __is_url_in_db(self, url: str):
+        connection = ConnectDB()
+        results = connection.is_url(user_id=self.user_id)
+        for result in results:
+            if url == result[0]:
+                return True

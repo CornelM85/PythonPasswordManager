@@ -146,3 +146,11 @@ class ConnectDB:
         self.cursor.execute(query, parameters)
         self.connection.commit()
         return True
+
+    def is_url(self, user_id: str):
+        query = """
+                SELECT url FROM websites
+                WHERE user_id = ?
+                """
+        self.cursor.execute(query, str(user_id))
+        return self.cursor.fetchall()
